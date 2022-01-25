@@ -2,15 +2,18 @@ package com.example.springapp.service;
 
 import com.example.springapp.model.Department;
 import com.example.springapp.repository.DepartmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class DepartmentService {
-    @Autowired
-    private DepartmentRepository repository;
+
+    private final DepartmentRepository repository;
+
+    public DepartmentService(DepartmentRepository repository) {
+        this.repository = repository;
+    }
 
     public Department saveDepartment(Department department) {
         return repository.save(department);

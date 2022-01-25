@@ -2,15 +2,18 @@ package com.example.springapp.service;
 
 import com.example.springapp.model.Contact;
 import com.example.springapp.repository.ContactRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ContactService {
-    @Autowired
-    private ContactRepository repository;
+
+    private  final ContactRepository repository;
+
+    public ContactService(ContactRepository repository) {
+        this.repository = repository;
+    }
 
     public Contact saveContact(Contact contact) {
         return repository.save(contact);

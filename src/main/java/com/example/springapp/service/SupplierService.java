@@ -2,15 +2,18 @@ package com.example.springapp.service;
 
 import com.example.springapp.model.Supplier;
 import com.example.springapp.repository.SupplierRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class SupplierService {
-    @Autowired
-    private SupplierRepository repository;
+
+    private  final SupplierRepository repository;
+
+    public SupplierService(SupplierRepository repository) {
+        this.repository = repository;
+    }
 
     public Supplier saveSupplier(Supplier supplier) {
         return repository.save(supplier);
