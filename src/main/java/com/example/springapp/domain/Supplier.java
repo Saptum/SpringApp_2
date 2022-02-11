@@ -1,4 +1,4 @@
-package com.example.springapp.model;
+package com.example.springapp.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,12 +13,13 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "suppliers")
+public class Supplier {
     @Id
     @GeneratedValue
-    private int id;
+    private Integer id;
     private String name;
-    private int quantity;
-    private double price;
+    private String address;
+    private String email;
+    private String phone;
 }
