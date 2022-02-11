@@ -1,6 +1,6 @@
 package com.example.springapp.controller;
 
-import com.example.springapp.model.User;
+import com.example.springapp.domain.User;
 import com.example.springapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

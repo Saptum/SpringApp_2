@@ -1,6 +1,6 @@
 package com.example.springapp.controller;
 
-import com.example.springapp.model.Department;
+import com.example.springapp.domain.Department;
 import com.example.springapp.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

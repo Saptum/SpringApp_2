@@ -1,6 +1,6 @@
 package com.example.springapp.controller;
 
-import com.example.springapp.model.Supplier;
+import com.example.springapp.domain.Supplier;
 import com.example.springapp.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

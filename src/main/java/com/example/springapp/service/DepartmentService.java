@@ -1,6 +1,6 @@
 package com.example.springapp.service;
 
-import com.example.springapp.model.Department;
+import com.example.springapp.domain.Department;
 import com.example.springapp.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
 

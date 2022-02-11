@@ -1,6 +1,6 @@
 package com.example.springapp.service;
 
-import com.example.springapp.model.Supplier;
+import com.example.springapp.domain.Supplier;
 import com.example.springapp.repository.SupplierRepository;
 import org.springframework.stereotype.Service;
 

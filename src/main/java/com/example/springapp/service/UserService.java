@@ -1,6 +1,6 @@
 package com.example.springapp.service;
 
-import com.example.springapp.model.User;
+import com.example.springapp.domain.User;
 import com.example.springapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
