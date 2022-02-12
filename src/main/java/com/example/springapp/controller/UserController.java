@@ -1,55 +1,53 @@
 package com.example.springapp.controller;
 
 import com.example.springapp.domain.User;
+import com.example.springapp.dto.UserDto;
+import com.example.springapp.mapper.UserMapper;
 import com.example.springapp.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "User Controller", description = "The User API")
 @RestController
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
+        User user = UserMapper.INSTANCE.userDtoToUser(userDto);
+        userService.saveUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
+    }
 
     @GetMapping("/users")
-    public String findAll(Model model){
-        List<User> users = userService.findAll();
-        model.addAttribute("users", users);
-        return "user-list";
+    public ResponseEntity<List<UserDto>> findAll(Model model) {
+        List<UserDto> userDtos = UserMapper.INSTANCE.userToDtos(userService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(userDtos);
     }
 
-    @GetMapping("/user-create")
-    public String createUserForm(User user){
-        return "user-create";
-    }
-
-    @PostMapping("/user-create")
-    public String createUser(User user){
-        userService.saveUser(user);
-        return "redirect:/users";
-    }
-
-    @GetMapping("/user-delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id){
+    @DeleteMapping("/user-delete/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteById(id);
-        return "redirect:/users";
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User with id : " + id + " deleted");
     }
 
-    @GetMapping("/user-update/{id}")
-    public String updateUserForm(@PathVariable("id") Long id, Model model){
-        User user = userService.findById(id);
-        model.addAttribute("user", user);
-        return "/user-update";
+
+    @PutMapping("/user-update")
+    public ResponseEntity<UserDto> updateUser(User user) {
+        UserDto userDto = UserMapper.INSTANCE.userToDto(userService.saveUser(user));
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
-    @PostMapping("/user-update")
-    public String updateUser(User user){
-        userService.saveUser(user);
-        return "redirect:/users";
-    }
 }
