@@ -45,7 +45,6 @@ public class DepartmentService {
 
     public Department updateDepartment(Department department) {
         Department updatedDepartment = repository.findById(department.getId()).orElse(null);
-        updatedDepartment.setDescription(department.getDescription());
         updatedDepartment.setCountry(department.getCountry());
         updatedDepartment.setCity(department.getCity());
         updatedDepartment.setAddress(department.getAddress());

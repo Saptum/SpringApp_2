@@ -1,16 +1,61 @@
 package com.example.springapp.controller;
 
 import com.example.springapp.domain.Contact;
+import com.example.springapp.dto.ContactDto;
+import com.example.springapp.mapper.ContactMapper;
 import com.example.springapp.service.ContactService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+@Tag(name = "Contact Controller", description = "The Contact API")
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 public class ContactController {
-    @Autowired
-    private ContactService service;
+
+    private final ContactService service;
+
+    public ContactController(ContactService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/contacts")
+    public ResponseEntity<ContactDto> saveContact(@RequestBody ContactDto contactDto) {
+        Contact contact = ContactMapper.INSTANCE.contactDtoToContact(contactDto);
+        service.saveContact(contact);
+        return ResponseEntity.status(HttpStatus.CREATED).body(contactDto);
+    }
+
+    @GetMapping("/contacts")
+    public ResponseEntity<List<ContactDto>> getContacts() {
+        List<ContactDto> contactDtoList = ContactMapper
+                .INSTANCE.contactToDtos(service.getContacts());
+        return ResponseEntity.status(HttpStatus.OK).body(contactDtoList);
+    }
+
+    @GetMapping("/contactsByCountry/{country}")
+    public ResponseEntity<List<ContactDto>> getContactsByCountry(@PathVariable String country) {
+        List<ContactDto> contactDtoList = ContactMapper.INSTANCE.contactToDtos(service.getContactsByCountry(country));
+        return ResponseEntity.status(HttpStatus.OK).body(contactDtoList);
+    }
+
+    @GetMapping("/contactsByCity/{city}")
+    public ResponseEntity<List<ContactDto>> getContactsByCity(@PathVariable String city) {
+        List<ContactDto> contactDtoList = ContactMapper.INSTANCE.contactToDtos(service.getContactsByCity(city));
+        return ResponseEntity.status(HttpStatus.OK).body(contactDtoList);
+    }
+
+    @GetMapping("/contactById/{id}")
+    public ResponseEntity<ContactDto> getContactById(@PathVariable Integer id) {
+        ContactDto contactDtoList = ContactMapper.INSTANCE.contactToDto(service.getContactById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(contactDtoList);
+    }
+
 
     @PostMapping("/addContact")
     public Contact saveContact(@RequestBody Contact contact) {
@@ -22,34 +67,17 @@ public class ContactController {
         return service.saveContacts(contacts);
     }
 
-    @GetMapping("/contacts")
-    public List<Contact> getContacts() {
-        return service.getContacts();
-    }
-
-    @GetMapping("/contactById/{id}")
-    public Contact getContactById(@PathVariable int id) {
-        return service.getContactById(id);
-    }
-
-    @GetMapping("/contactsByCountry/{country}")
-    public List<Contact> getContactsByCountry(@PathVariable String country) {
-        return service.getContactsByCountry(country);
-    }
-
-    @GetMapping("/contactsByCity/{city}")
-    public List<Contact> getContactsByCity(@PathVariable String city) {
-        return service.getContactsByCity(city);
-    }
-
     @PutMapping("/updateContact")
-    public Contact updateContact(@RequestBody Contact contact) {
-        return service.updateContact(contact);
+    public ResponseEntity<ContactDto> updateContact(@RequestBody Contact contact) {
+        ContactDto contactDto = ContactMapper
+                .INSTANCE.contactToDto(service.updateContact( contact));
+        return ResponseEntity.status(HttpStatus.OK).body(contactDto);
     }
 
     @DeleteMapping("/deleteContact/{id}")
-    public String deleteContact(@PathVariable int id) {
-        return service.deleteContact(id);
+    public ResponseEntity<String> deleteContact(@PathVariable Integer id) {
+        service.deleteContact(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Employee with id : " + id + " deleted");
     }
 
 }
