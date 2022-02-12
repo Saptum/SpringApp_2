@@ -1,60 +1,77 @@
 package com.example.springapp.controller;
 
 import com.example.springapp.domain.Supplier;
+import com.example.springapp.dto.SupplierDto;
+import com.example.springapp.mapper.SupplierMapper;
 import com.example.springapp.service.SupplierService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Supplier Controller", description = "The Supplier API")
 @RestController
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SupplierController {
-    @Autowired
-    private SupplierService service;
+
+    private  final SupplierService service;
+
+    public SupplierController(SupplierService service) {
+        this.service = service;
+    }
 
 
     @PostMapping("/addSupplier")
-    public Supplier addSupplier(@RequestBody Supplier supplier) {
-        return service.saveSupplier(supplier);
-    }
-
-    @PostMapping("/addSuppliers")
-    public List<Supplier> addSuppliers(@RequestBody List<Supplier> suppliers) {
-        return service.saveAllSuppliers(suppliers);
+    public ResponseEntity<SupplierDto> addSupplier(@RequestBody SupplierDto supplierDto) {
+        Supplier supplier = SupplierMapper.INSTANCE.supplierDtoToSupplier(supplierDto);
+      service.saveSupplier(supplier);
+        return ResponseEntity.status(HttpStatus.CREATED).body(supplierDto);
     }
 
     @GetMapping("/suppliers")
-    public List<Supplier> getSuppliers() {
-        return service.getSuppliers();
+    public ResponseEntity<List<SupplierDto>> getSuppliers() {
+        List <SupplierDto> supplierDtos = SupplierMapper.INSTANCE.supplierToDtos(service.getSuppliers());
+        return ResponseEntity.status(HttpStatus.OK).body(supplierDtos);
     }
 
     @GetMapping("/supplierById/{id}")
-    public Supplier getSupplierById(@PathVariable int id) {
-        return service.getSupplierById(id);
+    public ResponseEntity <SupplierDto> getSupplierById(@PathVariable int id) {
+      SupplierDto supplierDto = SupplierMapper.INSTANCE.supplierToDto(service.getSupplierById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(supplierDto);
     }
 
     @GetMapping("/supplierByEmail/{email}")
-    public Supplier getSupplierByEmail(@PathVariable String email) {
-        return service.getSupplierByEmail(email);
+    public ResponseEntity <SupplierDto> getSupplierByEmail(@PathVariable String email) {
+        SupplierDto supplierDto = SupplierMapper.INSTANCE.supplierToDto(service.getSupplierByEmail(email));
+        return ResponseEntity.status(HttpStatus.OK).body(supplierDto);
     }
 
     @GetMapping("/supplierByName/{name}")
-    public Supplier getSupplierByName(@PathVariable String name) {
-        return service.getSupplierByName(name);
+    public ResponseEntity <SupplierDto>  getSupplierByName(@PathVariable String name) {
+        SupplierDto supplierDto = SupplierMapper.INSTANCE.supplierToDto(service.getSupplierByName(name));
+        return ResponseEntity.status(HttpStatus.OK).body(supplierDto);
     }
 
     @GetMapping("/supplierByPhone/{phone}")
-    public Supplier getSupplierByPhone(@PathVariable String phone) {
-        return service.getSupplierByPhone(phone);
+    public ResponseEntity <SupplierDto>  getSupplierByPhone(@PathVariable String phone) {
+        SupplierDto supplierDto = SupplierMapper.INSTANCE.supplierToDto(service.getSupplierByPhone(phone));
+        return ResponseEntity.status(HttpStatus.OK).body(supplierDto);
     }
 
     @PutMapping("/update")
-    public Supplier updateSupplier(@RequestBody Supplier supplier) {
-        return service.updateSupplier(supplier);
+    public ResponseEntity <SupplierDto>  updateSupplier(@RequestBody Supplier supplier) {
+        SupplierDto supplierDto = SupplierMapper.INSTANCE.supplierToDto(service.updateSupplier(supplier));
+        return ResponseEntity.status(HttpStatus.OK).body(supplierDto);
     }
 
     @DeleteMapping("/deleteSupplier/{id}")
-    public String deleteSupplier(@PathVariable int id) {
-        return service.deleteSupplier(id);
+    public ResponseEntity<String> deleteSupplier(@PathVariable Integer id) {
+        service.deleteSupplier(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Supplier with id : " + id + " deleted");
+
     }
+
 }
